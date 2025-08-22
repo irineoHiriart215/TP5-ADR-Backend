@@ -1,6 +1,6 @@
 const {UsuarioProfesional, Paciente} = require('../models');
 const bcrypt = require('bcrypt');
-const { validationResult } = require('express-validator');
+const jwt = require('jsonwebtoken');
 
 //Obtener todos los profesionales.
 const getAllProfesionales = async (req, res) => {
@@ -112,4 +112,23 @@ const ObtenerPacientesProfesional = async (req, res) => {
     }
 };
 
-module.exports = { getAllProfesionales, getProfesional, crear, actualizar, asociarPaciente, ObtenerPacientesProfesional };
+//login
+const login = async (req, res) => {
+    const { dni, password } = req.body;
+    try{
+        const user = await UsuarioProfesional.findOne({ where: {dni}});
+        if (!user) return res.status(401).json({ error: 'Usuario no encontrado'});
+
+        const passwordValida = await bcrypt.compare(password, user.contraseña);
+        if (!passwordValida) return res.status(401).json({ error: 'Contraseña incorrecta'});
+
+        const token = jwt.sign ({id: user.id}, process.env.JWT_SECRET, {expiresIn: '3h'});
+        res.json({ token });
+    }
+    catch (error){
+        console.error(error);
+        res.status(500).json({ error: 'Error en el servidor'});
+    }
+}
+
+module.exports = { getAllProfesionales, getProfesional, crear, actualizar, asociarPaciente, ObtenerPacientesProfesional, login };
