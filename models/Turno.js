@@ -19,12 +19,8 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true
     },
-    fecha: {
+    fecha_hora: {
       type: DataTypes.DATE,
-      allowNull: false
-    },
-    hora: {
-      type: DataTypes.TIME,
       allowNull: false
     },
     motivo: {

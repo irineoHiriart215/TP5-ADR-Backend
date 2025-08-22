@@ -3,24 +3,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('turno', {
-      id: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
-      },
-      fecha_hora: {
-        type: Sequelize.DATE,
-        allowNull: false
-      },
-      motivo: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      tipo: {
-        type: Sequelize.ENUM('consultorio', 'domicilio'),
-        allowNull: false
-      },
+    await queryInterface.createTable('paciente_profesional', {
       paciente_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -45,6 +28,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('turno');
+    await queryInterface.dropTable('paciente_profesional');
   }
 };

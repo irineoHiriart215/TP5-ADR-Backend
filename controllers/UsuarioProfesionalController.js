@@ -1,4 +1,4 @@
-const {UsuarioProfesional} = require('../models');
+const {UsuarioProfesional, Paciente} = require('../models');
 const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 
@@ -78,16 +78,18 @@ const actualizar = async (req, res) => {
 };
 
 
-const asociarProfesional = async (req, res) => {
-  try {
-    const paciente = await Paciente.findByPk(req.params.pacienteId);
-    const profesional = await UsuarioProfesional.findByPk(req.body.profesionalId);
-
+const asociarPaciente = async (req, res) => {
+    const paciente = await Paciente.findByPk(req.body.pacienteId);
+    const profesional = await UsuarioProfesional.findByPk(req.params.profesionalId);
+    const existeAsoc = await profesional.hasPaciente(paciente);
+    if(existeAsoc){
+        return res.status(400).json({ error: 'El profesional ya tiene asignado el paciente'});
+    }
     if (!paciente || !profesional) {
       return res.status(404).json({ error: 'Paciente o Profesional no encontrado' });
     }
-
-    await paciente.addUsuarioProfesional(profesional);
+    try {
+    await profesional.addPaciente(paciente);
     res.json({ mensaje: 'Asociación creada correctamente' });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -110,4 +112,4 @@ const ObtenerPacientesProfesional = async (req, res) => {
     }
 };
 
-module.exports = { getAllProfesionales, getProfesional, crear, actualizar, ObtenerPacientesProfesional };
+module.exports = { getAllProfesionales, getProfesional, crear, actualizar, asociarPaciente, ObtenerPacientesProfesional };

@@ -7,5 +7,6 @@ router.get('/:id', controller.getProfesional);
 router.post('/', controller.crear);
 router.put('/:id', controller.actualizar);
 router.get('/:id/pacientes', controller.ObtenerPacientesProfesional);
+router.post('/:profesionalId/pacientes', controller.asociarPaciente);
 
 module.exports = router;

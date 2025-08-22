@@ -1,14 +1,33 @@
-
-// controllers/turnoController.js
 const { Turno, Paciente, UsuarioProfesional } = require('../models');
 
 
 const crearTurno =  async (req, res) => {
+  const { fecha, hora, motivo, tipo, paciente_id, profesional_id } = req.body;
+    if (!fecha || !hora || !motivo || !tipo || !paciente_id || !profesional_id) {
+      return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+    }
+    
+    if (!['consultorio', 'domicilio'].includes(tipo)) {
+      return res.status(400).json({ error: 'Tipo de turno inválido' });
+    }
+
+    const fechaHora = new Date(`${fecha}T${hora}`);
+      
+      if (isNaN(fechaHora.getTime())) {
+        return res.status(400).json({ error: "Fecha y hora incorrectas" });
+      }
+
     try {
-      const nuevoTurno = await Turno.create(req.body);
+      const paciente = await Paciente.findByPk(paciente_id);
+      const profesional = await UsuarioProfesional.findByPk(profesional_id);
+      if (!paciente || !profesional) {
+        return res.status(404).json({ error: 'Paciente o Profesional no encontrado' });
+      }
+
+      const nuevoTurno = await Turno.create({...req.body, fecha_hora: fechaHora});
       res.status(201).json(nuevoTurno);
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      res.status(500).json({ error: "Error al crear el turno"+`${fecha_hora}` });
     }
   };
 

@@ -1,4 +1,4 @@
-const { Paciente, ObraSocial } = require('../models');
+const { Paciente, ObraSocial, UsuarioProfesional } = require('../models');
 
 const create = async (req, res) => {
     const {
@@ -72,11 +72,15 @@ const actualizar = async (req, res) => {
 
 const asociarProfesional = async (req, res) => {
   try {
-    const paciente = await Paciente.findByPk(req.params.pacienteId);
+    const paciente = await Paciente.findByPk(req.params.id);
     const profesional = await UsuarioProfesional.findByPk(req.body.profesionalId);
-
+    
     if (!paciente || !profesional) {
       return res.status(404).json({ error: 'Paciente o Profesional no encontrado' });
+    }
+    const existeAsoc = await paciente.hasUsuarioProfesional(profesional);
+    if(existeAsoc){
+        return res.status(400).json({ error: 'El paciente ya esta asociado al profesional'});
     }
 
     await paciente.addUsuarioProfesional(profesional);
