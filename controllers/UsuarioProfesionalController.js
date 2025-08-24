@@ -123,7 +123,7 @@ const login = async (req, res) => {
         if (!passwordValida) return res.status(401).json({ error: 'Contraseña incorrecta'});
 
         const token = jwt.sign ({id: user.id}, process.env.JWT_SECRET, {expiresIn: '3h'});
-        res.json({ token });
+        res.json({ token, profesionalId: user.id });
     }
     catch (error){
         console.error(error);
