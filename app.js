@@ -1,10 +1,15 @@
 require('dotenv').config();
 
+const cors = require('cors');
 const express = require('express');
 const app = express();
 const {sequelize} = require('./models');
 const routes = require('./routes');
 
+app.use(cors({
+    origin: '*',
+    credentials: true
+}));
 app.use(express.json());
 app.use('/api', routes);
 
