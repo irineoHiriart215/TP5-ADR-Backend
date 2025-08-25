@@ -76,6 +76,24 @@ const eliminarTurno = async (req, res) => {
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
+  };
+
+const obtenerTurnosPorProfesional = async (req, res) => {
+  const profesional_id = req.params.profesionalId;
+  if (!profesional_id) {
+    return res.status(400).json({ error: 'Falta el ID del profesional' });
   }
 
-module.exports = {crearTurno, obtenerTurnos, obtenerTurnoPorId, actualizarTurno, eliminarTurno }
+  try {
+    const turnos = await Turno.findAll({
+      where: { profesional_id },
+      include: [Paciente],
+      order: [['fecha_hora', 'ASC']],
+    });
+    res.json(turnos);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener los turnos' });
+  }
+};
+
+module.exports = {crearTurno, obtenerTurnos, obtenerTurnoPorId, actualizarTurno, eliminarTurno, obtenerTurnosPorProfesional }

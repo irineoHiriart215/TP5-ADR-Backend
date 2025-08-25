@@ -7,5 +7,6 @@ router.get('/:id', controller.obtenerTurnoPorId);
 router.post('/', controller.crearTurno);
 router.put('/:id', controller.actualizarTurno);
 router.delete('/', controller.eliminarTurno);
+router.get('/prof/:profesionalId', controller.obtenerTurnosPorProfesional);
 
 module.exports = router;

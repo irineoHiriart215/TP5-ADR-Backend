@@ -29,8 +29,8 @@ const create = async (req, res) => {
       return res.status(404).json({ error: 'La obra social especificada no existe' });
     }
 
-        const nuevo = await Paciente.create(req.body);
-        res.status(201).json(nuevo);
+    const nuevo = await Paciente.create(req.body);
+    res.status(201).json(nuevo);
     }
     catch (error){
         res.status(500).json({ error: 'Error al crear el paciente'});
